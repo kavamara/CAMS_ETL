@@ -56,7 +56,7 @@ namespace CAMS_ETL
             //read the inspection sheet and convert to xml
             XDocument conditionXML = XMLConvertHelper.ConvertExcelDataToXML(txtConditionFile.Text,1);
             XDocument inputXML = XMLConvertHelper.ConvertExcelDataToXML(txtInputFile.Text,0);
-            DataSet ds = FilterResults(conditionXML, inputXML, select
+            DataSet ds = FilterResults(conditionXML, inputXML, selectableCols);
 
             if (ds != null || ds.Tables.Count > 0)
             {
