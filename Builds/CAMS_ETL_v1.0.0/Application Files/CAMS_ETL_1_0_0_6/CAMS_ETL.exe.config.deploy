@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+<configuration>
+  <configSections>
+    <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <section name="CAMS_ETL.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false"/>
+    </sectionGroup>
+  </configSections>
+  <connectionStrings>
+    <add name="CAMSConnectio" providerName="System.Data.SqlClient" connectionString="Data Source=WIN-IMUR5M9R08M\SQL2008; integrated security = true"/>
+  </connectionStrings>
+    <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/>
+    </startup>
+  <appSettings>
+    <add key="ShowCreateDB" value="false"/>
+  </appSettings>
+ 
+  <userSettings>
+    <CAMS_ETL.Properties.Settings>
+      <setting name="ConfigSavePath" serializeAs="String">
+        <value>c:\temp\config\</value>
+      </setting>
+    </CAMS_ETL.Properties.Settings>
+  </userSettings>
+</configuration>

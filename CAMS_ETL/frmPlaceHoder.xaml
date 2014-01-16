@@ -1,0 +1,8 @@
+﻿<Window x:Name="Condition_Data" x:Class="CAMS_ETL.frmPlaceHoder"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="frmPlaceHoder" Height="250" Width="600" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    <Grid Name="phGrid">
+        
+    </Grid>
+</Window>

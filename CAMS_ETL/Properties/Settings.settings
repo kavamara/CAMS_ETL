@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CAMS_ETL.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ConfigSavePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\temp\config\</Value>
+    </Setting>
+    <Setting Name="InspectionColumns" Type="System.String" Scope="User">
+      <Value Profile="(Default)">"Building Type,Building Name,Functional Area Type,Functional Area Type,Functional Area Name,Component Group,Building Component Type,Building Component"</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,38 @@
+﻿<Window x:Class="CAMS_ETL.frmGrid"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:GridItems="clr-namespace:CAMS_ETL"
+        Title="frmGrid" Height="300" Width="350">
+    <Window.Resources>
+        <GridItems:ViewModel x:Key="ViewModel"/>
+    </Window.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"  Height="300" VerticalAlignment="Top" x:Name="mainScroll">
+        <Grid Height="244">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="69*"/>
+                <ColumnDefinition Width="77*"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid x:Name="dgGrid" ItemsSource="{Binding}"  AutoGenerateColumns="False" 
+                      HorizontalAlignment="Left" Width="340" Grid.ColumnSpan="2" 
+                      Height="230" CanUserAddRows="True" VerticalAlignment="Top" 
+                      Margin="0,-25,0,0" ClipToBounds="True" SnapsToDevicePixels="True" 
+                      SelectionMode="Single" SelectionUnit="Cell" IsReadOnly="False">
+               
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="Current" Width="SizeToHeader" MinWidth="160"
+                                       Binding="{Binding current}" 
+                                       IsReadOnly="False"/>
+                    
+                    <DataGridTextColumn Header="Replace With" Width="SizeToHeader" MinWidth="160"
+                                       Binding="{Binding edited}" 
+                                       IsReadOnly="False"/>
+                </DataGrid.Columns>
+               
+            </DataGrid>
+            <Button x:Name="btnCancel" Content="Cancel" Grid.Column="1" Margin="102.37,210,2,0" VerticalAlignment="Top" Click="btnCancel_Click"/>
+            <Button x:Name="btnOk" Content="OK" HorizontalAlignment="Left" Margin="22.37,210,0,0" VerticalAlignment="Top" Width="75" Click="btnOk_Click" Grid.Column="1"/>
+
+        </Grid>
+    </ScrollViewer>
+</Window>
