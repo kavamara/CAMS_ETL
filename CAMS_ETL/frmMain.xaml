@@ -3,20 +3,20 @@
         xmlns:ac="clr-namespace:AdornedControl;assembly=AdornedControl"
         xmlns:local="clr-namespace:CAMS_ETL"        
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Icon=".\images\table.ico"    
-        Title="Main Window" Height="416.418" Width="253" BorderThickness="0" WindowStyle="None" ResizeMode="NoResize" SizeToContent="WidthAndHeight" >
+        Title="Main Window" Height="260" Width="340" BorderThickness="0" WindowStyle="None" ResizeMode="NoResize" SizeToContent="WidthAndHeight" Background="#FFB8BEBF" >
     <Window.Effect>
-        <DropShadowEffect/>
+        <DropShadowEffect/>        
     </Window.Effect>    
-    <Grid Height="410" VerticalAlignment="Top" HorizontalAlignment="Left" Width="248" x:Name="MainGrid">
+    <Grid Height="260" VerticalAlignment="Top" x:Name="MainGrid" Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="0*"/>
         </Grid.RowDefinitions>
-        <ac:AdornedControl Name="LoadingAdorner" Margin="0,0,0,-131" Grid.RowSpan="2" Height="411" VerticalAlignment="Top" >
+        <ac:AdornedControl Name="LoadingAdorner" Margin="0,0,0,0" Height="260" VerticalAlignment="Top" Grid.RowSpan="2" Width="340" >
             <ac:AdornedControl.AdornerContent>
                 <local:LoadingWait></local:LoadingWait>
             </ac:AdornedControl.AdornerContent>
-                <Button x:Name="btnGenerate" Height="127" VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" Click="btnGenerate_Click" Margin="5,10,0,0">
+            <Button Name="btnGenerate" Height="127" Width="110" VerticalAlignment="Top" Click="btnGenerate_Click" Margin="0,0,0,0" HorizontalAlignment="Left">
                     <Button.Effect>
                         <DropShadowEffect/>
                     </Button.Effect>
@@ -28,7 +28,7 @@
                     </StackPanel>
                 </Button>
         </ac:AdornedControl>
-        <Button x:Name="btnConfig" Margin="0,10,18,0" HorizontalAlignment="Right" Width="110" Height="127" VerticalAlignment="Top" Click="btnConfig_Click">
+        <Button x:Name="btnConfig" Margin="115,0,0,0" HorizontalAlignment="Left" Width="110" Height="127" VerticalAlignment="Top" Click="btnConfig_Click">
             <Button.Effect>
                 <DropShadowEffect/>
             </Button.Effect>
@@ -39,7 +39,7 @@
                 </StackPanel>
             </StackPanel>
         </Button>
-        <Button x:Name="btnCondition" Margin="0,143,132,0"  Width="110" Height="127" VerticalAlignment="Top" HorizontalAlignment="Right" Click="btnCondition_Click">
+        <Button x:Name="btnCondition" Margin="0,130,0,0"  Width="110" Height="127" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnCondition_Click">
             <Button.Effect>
                 <DropShadowEffect/>
             </Button.Effect>
@@ -50,7 +50,7 @@
                 </StackPanel>
             </StackPanel>
         </Button>
-        <Button x:Name="btnExit" Margin="0,276,132,0"  Width="110" Height="127" VerticalAlignment="Top" HorizontalAlignment="Right" Click="btnExit_Click">
+        <Button x:Name="btnExit" Margin="229,130,0,0"  Width="110" Height="127" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnExit_Click">
             <Button.Effect>
                 <DropShadowEffect/>
             </Button.Effect>
@@ -61,7 +61,7 @@
                 </StackPanel>
             </StackPanel>
         </Button>
-        <Button x:Name="btnConditionData" Margin="0,143,18,0"  Width="110" Height="127" VerticalAlignment="Top" HorizontalAlignment="Right" Click="btnConditionData_Click">
+        <Button x:Name="btnConditionData" Margin="115,130,0,0"  Width="110" Height="127" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnConditionData_Click">
             <Button.Effect>
                 <DropShadowEffect/>
             </Button.Effect>
@@ -69,6 +69,17 @@
                 <Image Source="images/home_office_icon.png" Height="104" />
                 <StackPanel>
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center"><Run Text="Condition Data"/></TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </Button>
+        <Button x:Name="btndb" Margin="229,0,0,0" HorizontalAlignment="Left" Width="110" Height="127" VerticalAlignment="Top"  Click="btndb_Click">
+            <Button.Effect>
+                <DropShadowEffect/>
+            </Button.Effect>
+            <StackPanel>
+                <Image Source="images/database3.png" Height="104" />
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center"><Run Text="Database"/></TextBlock>
                 </StackPanel>
             </StackPanel>
         </Button>

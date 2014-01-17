@@ -63,7 +63,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -234,6 +234,9 @@
     <AppDesigner Include="Properties\" />
     <Resource Include="images\LocationFile.png" />
     <Resource Include="images\home_office_icon.png" />
+    <Resource Include="images\database.png" />
+    <Resource Include="images\database2.png" />
+    <Resource Include="images\database3.png" />
     <Content Include="Templates\Building Component Type.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -278,7 +281,6 @@
     <Resource Include="images\settings-icon.jpg" />
     <Resource Include="BinReferences\DocumentFormat.OpenXml.xml" />
     <Content Include="BinReferences\Excel.dll" />
-    <Content Include="BinReferences\Excel.pdb" />
     <Content Include="BinReferences\ICSharpCode.SharpZipLib.dll" />
   </ItemGroup>
   <ItemGroup>

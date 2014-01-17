@@ -159,6 +159,12 @@ namespace CAMS_ETL
             worker_DoWork(null, null);
         }
 
+        private void btndb_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Feature is currently unavailable");
+        }
+
+        
         private void btnConfig_Click(object sender, RoutedEventArgs e)
         {
             MainWindow mw = new MainWindow();
