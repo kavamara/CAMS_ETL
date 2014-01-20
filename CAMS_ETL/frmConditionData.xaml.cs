@@ -17,6 +17,8 @@ using System.Linq.Dynamic;
 using CAMS_ETL.HelperClasses;
 using System.IO;
 using System.Configuration;
+using System.Windows.Forms;
+using CSOpenXmlExcelToXml;
 
 namespace CAMS_ETL
 {
@@ -26,6 +28,7 @@ namespace CAMS_ETL
     public partial class ConditionData : Window
     {
         public Dictionary<string, string> selectableCols { get; set; }
+        public List<string> fileList { get; set; }
 
         public ConditionData()
         {
@@ -42,7 +45,7 @@ namespace CAMS_ETL
         {
             if (txtConditionFile.Text == string.Empty || txtInputFile.Text == string.Empty || selectableCols.Count == 0)
             {
-                MessageBox.Show("Please select files and columns to map");
+                System.Windows.MessageBox.Show("Please select files and columns to map");
             }
             else
             {
@@ -53,28 +56,38 @@ namespace CAMS_ETL
 
         private void DoProcess()
         {
+            string filename = string.Empty;
             //read the inspection sheet and convert to xml
-            XDocument conditionXML = XMLConvertHelper.ConvertExcelDataToXML(txtConditionFile.Text,1);
-            XDocument inputXML = XMLConvertHelper.ConvertExcelDataToXML(txtInputFile.Text,0);
-            DataSet ds = FilterResults(conditionXML, inputXML, selectableCols);
-
-            if (ds != null || ds.Tables.Count > 0)
+            foreach (string fileName in fileList)
             {
-                string filename = string.Format("{0}\\inspection\\{1}_{2}.xlsx", System.IO.Path.GetDirectoryName(txtInputFile.Text), System.IO.Path.GetFileNameWithoutExtension(txtInputFile.Text), DateTime.Now.ToFileTime().ToString());
-
-                FileSaveHelper.ExportDataSet(ds, filename);
-                MessageBox.Show(string.Format("Operation completed. '{0}' created.", filename));
+                XDocument conditionXML = XMLConvertHelper.ConvertExcelDataToXML(fileName, 1);
+                XDocument inputXML = XMLConvertHelper.ConvertExcelDataToXML(txtInputFile.Text, 0);
+                DataSet ds = FilterResults(conditionXML, inputXML, selectableCols, out filename);
+                //conditionXML.Save("c:\\temp\\test.xml");
+                if (ds != null || ds.Tables.Count > 0)
+                {
+                    ConvertExcelToXml cex = new ConvertExcelToXml();
+                    cex.GenerateExcel(ds.Tables[0], fileName);
+                    if (filename == string.Empty)
+                    {
+                        filename = string.Format("{0}_{1}.xlsx", System.IO.Path.GetFileNameWithoutExtension(txtInputFile.Text), DateTime.Now.ToFileTime().ToString());
+                    }
+                    filename = string.Format("{0}\\inspection\\{1}_{2}.xlsx", System.IO.Path.GetDirectoryName(txtInputFile.Text), System.IO.Path.GetFileNameWithoutExtension(txtInputFile.Text), DateTime.Now.ToFileTime().ToString());
+                    FileSaveHelper.ExportDataSet(ds, filename);                    
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("No matching records found.");
+                }
             }
-            else
-            {
-                MessageBox.Show("No matching records found.");
-            }
-
+            System.Windows.MessageBox.Show(string.Format("Operation completed. '{0}' created.", txtConditionFile.Text));
         }
 
-        private DataSet FilterResults(XDocument orginalDoc, XDocument inputFile, Dictionary<string, string> mapCols)
+        private DataSet FilterResults(XDocument orginalDoc, XDocument inputFile, Dictionary<string, string> mapCols, out string filename)
         {
             DataSet ds = new DataSet();
+            filename = string.Empty;
+
             XDocument doc = new XDocument(new XElement("Dataset1"));
             List<bool> isMatching = null;
 
@@ -83,9 +96,17 @@ namespace CAMS_ETL
                 foreach (XElement xe in orginalDoc.Root.Elements())
                 {
                     XElement xElem = new XElement("Table1");
-                  
+
                     foreach (XElement xeIn in inputFile.Root.Elements())
                     {
+                        if (filename == string.Empty)
+                        {
+                            if (xeIn.Element(XmlConvert.EncodeLocalName("Building Name")) != null)
+                            {
+                                filename = xeIn.Element(XmlConvert.EncodeLocalName("Building Name")).Value;
+                            }
+                        }
+
                         isMatching = new List<bool>();
                         foreach (KeyValuePair<string, string> kvp in mapCols)
                         {
@@ -138,10 +159,20 @@ namespace CAMS_ETL
                 {
                     int.TryParse(txtHdrNumber.Text, out skip);
                 }
-                List<string> InspColumns = GetColumnNamesFromInput(dlg.FileName, skip);
-
                 txtConditionFile.Text = dlg.FileName;
-                BindInspectionColumns(InspColumns);
+                fileList = new List<string>();
+                fileList.Add(dlg.FileName);
+
+               
+                if (fileList != null && fileList.Count > 0)
+                {
+                    string filename = fileList.FirstOrDefault();
+                    if (filename != null)
+                    {
+                        List<string> InspColumns = GetColumnNamesFromInput(fileList.FirstOrDefault(), skip);
+                        BindInspectionColumns(InspColumns);
+                    }
+                }
             }
         }
              
@@ -224,6 +255,40 @@ namespace CAMS_ETL
             {
                 e.Handled = true;
             }
+        }
+
+        private void btnFolder_Click(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            fileList = new List<string>();
+            DialogResult result = dlg.ShowDialog();
+            int skip = 0;
+
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                string foldername = dlg.SelectedPath;
+                txtConditionFile.Text = foldername;
+
+                foreach (string f in Directory.GetFiles(foldername))
+                {
+                    fileList.Add(f);
+                }
+
+                if (txtHdrNumber.Text != string.Empty)
+                {
+                    int.TryParse(txtHdrNumber.Text, out skip);
+                }
+
+                if (fileList != null && fileList.Count > 0)
+                {
+                    string filename = fileList.FirstOrDefault();
+                    if (filename != null)
+                    {
+                        List<string> InspColumns = GetColumnNamesFromInput(fileList.FirstOrDefault(), skip);
+                        BindInspectionColumns(InspColumns);
+                    }
+                }
+            }            
         }
     }
 }

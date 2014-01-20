@@ -30,6 +30,7 @@ using System.Data.OleDb;
 using System.Xml;
 using System.Xml.Linq;
 using CAMS_ETL.Helpers;
+using DocumentFormat.OpenXml;
 
 namespace CSOpenXmlExcelToXml
 {
@@ -76,11 +77,12 @@ namespace CSOpenXmlExcelToXml
                     {
                         dt.Columns.Add(GetValueOfCell(spreadsheetDocument, cell));
                     }
-
+                    
                     // Add rows into DataTable
                     foreach (Row row in rowcollection)
                     {
                         DataRow temprow = dt.NewRow();
+                        
                         int columnIndex = 0;
                         foreach (Cell cell in row.Descendants<Cell>())
                         {
@@ -102,7 +104,7 @@ namespace CSOpenXmlExcelToXml
                             }
 
                             if (temprow.ItemArray.ElementAtOrDefault(columnIndex) != null)
-                            {
+                            {                                
                                 temprow[columnIndex] = GetValueOfCell(spreadsheetDocument, cell);
                             }
                             columnIndex++;
@@ -110,6 +112,7 @@ namespace CSOpenXmlExcelToXml
 
                         // Add the row to DataTable
                         // the rows include header row
+                       
                         dt.Rows.Add(temprow);
                     }
                 }
@@ -122,6 +125,132 @@ namespace CSOpenXmlExcelToXml
             {
                 throw new IOException(ex.Message);
             }
+        }
+
+        // Given a worksheet and a row index, return the row.
+        private Row GetRow(Worksheet worksheet, uint rowIndex)
+        {
+            return worksheet.GetFirstChild<SheetData>().
+              Elements<Row>().Where(r => r.RowIndex == rowIndex).First();
+        } 
+
+        private Cell GetCell(Worksheet worksheet,
+              string columnName, uint rowIndex)
+        {
+            Row row = GetRow(worksheet, rowIndex);
+
+            if (row == null)
+                return null;
+
+            return row.Elements<Cell>().Where(c => string.Compare
+                   (c.CellReference.Value, columnName +
+                   rowIndex, true) == 0).First();
+        }
+
+        public SharedStringItem GetSharedStringItemById(WorkbookPart workbookPart, int id)
+        {
+            return workbookPart.SharedStringTablePart.SharedStringTable.Elements<SharedStringItem>().ElementAt(id);
+        }
+
+        private string GetCellValue(WorkbookPart workbookPart, Cell cell)
+        {
+            string cellValue = string.Empty;
+
+            if (cell.DataType != null)
+            {
+                if (cell.DataType == CellValues.SharedString)
+                {
+                    int id = -1;
+
+                    if (Int32.TryParse(cell.InnerText, out id))
+                    {
+                        SharedStringItem item = GetSharedStringItemById(workbookPart, id);
+
+                        if (item.Text != null)
+                        {
+                            cellValue = item.Text.Text;
+                        }
+                        else if (item.InnerText != null)
+                        {
+                            cellValue = item.InnerText;
+                        }
+                        else if (item.InnerXml != null)
+                        {
+                            cellValue = item.InnerXml;
+                        }
+                    }
+                }
+            }
+            return cellValue;
+        }       
+
+        public void GenerateExcel(DataTable YoutdTName, string YourExcelfileName)
+        {
+            // Create cell reference array
+            string[] CellReferenceArray = new string[] { "A", "B", "C", "D", "E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W" };
+            //Open your saved excel file that you have created using template file.
+            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(YourExcelfileName, true))
+            {
+                // Get Workbook Part of Spread Sheet Document
+                WorkbookPart objworkbook = spreadsheetDocument.WorkbookPart;
+
+                // Get all sheets in spread sheet document 
+                IEnumerable<Sheet> sheetcollection = spreadsheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>();
+               
+                // Get relationship Id
+                string relationshipId = sheetcollection.First().Id.Value;
+
+                // Get sheet1 Part of Spread Sheet Document
+                WorksheetPart worksheetPart = (WorksheetPart)spreadsheetDocument.WorkbookPart.GetPartById(relationshipId);
+                Worksheet worksheet = worksheetPart.Worksheet;
+                // Get Data in Excel file
+                SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+                IEnumerable<Row> rowcollection = sheetData.Descendants<Row>().Skip(1);
+
+                if (rowcollection.Count() == 0)
+                {
+                    return;
+                }
+
+                // Create style sheet object that will be used for applying styling.
+              //  Stylesheet objstyleSheet = objworkbook.WorkbookStylesPart.Stylesheet;
+ 
+              
+                int i = 1;            
+                UInt32 index = 11;
+                
+                foreach (DataRow dr in YoutdTName.Rows)
+                {                    
+                    i = 0;
+                    foreach (DataColumn col in YoutdTName.Columns)
+                    {
+                        if (i < 23)
+                        {
+                            Cell theCell = GetCell(worksheet, CellReferenceArray[i], index);
+                            if (theCell != null && string.IsNullOrEmpty(GetCellValue(objworkbook,theCell)))
+                            {          
+                                //CellValue v1 = new CellValue(dr[col].ToString());
+                                //theCell.CellValue = v1;
+                                theCell.DataType = CellValues.InlineString;
+                                theCell.RemoveAllChildren();
+                                InlineString inline = new InlineString();
+                                Text t = new Text();
+                                t.Text = dr[col].ToString();
+                                inline.AppendChild(t);
+                                theCell.AppendChild(inline);
+                                
+                               
+                                worksheetPart.Worksheet.Save();                                      
+                            }
+                            i += 1;
+                        }
+                    }
+                          
+                    index += 1;
+                }
+                     
+            }
+           
         }
 
         public DataTable ReadFirstRow(string filename, int skip)
